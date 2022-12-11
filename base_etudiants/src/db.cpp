@@ -1,7 +1,7 @@
 #include "db.hpp"
 
 #include <err.h>       // err
-#include <fcntl.h>     // open
+#include <fcntl.h>     // open 
 #include <sys/stat.h>  // stat
 #include <unistd.h>    // read
 
