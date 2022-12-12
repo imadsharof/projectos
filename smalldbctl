@@ -1,0 +1,32 @@
+#!/bin/bash
+
+command=$1
+pid=$2
+
+# Exécute une action en fonction de la valeur de la variable $command.
+
+case $command in 
+
+
+		# Affiche les adresses IP des clients connectés à smalldb
+	"list")
+		ss --no-header -Ontp4 'sport = :28772'
+		;;
+		
+		# Envoie le signal SIGUSR1 à smalldb
+	"sync")
+		kill -SIGUSR1 $pid
+		;;
+			
+		# Envoie le signal SIGINT à smalldb
+	"stop")
+		kill -SIGINT $pid
+		;;
+	*)
+	#Au cas où la commande entrée est invalide
+	echo "La commande entrée n'est pas valide."
+	exit 1
+	;;
+esac #Fin de case
+
+#Si fonctionne pas donner au script droits d'exécution avec ' chmod +x smalldbctl '
