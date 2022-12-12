@@ -7,11 +7,25 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <signal.h>
 
+void closeclient(int sig){
+	
+	close(sockfd);
+	std::cout<<"Vous vous êtes déconnecté de la base de données SmallDB\n"<<std::endl;
+	exit(0);
+	
+	}
 
+const int PORT = 28772;
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
+	
+	// Permet de définir un gestionnaire de signaux pour SIGPIPE,
+	// ce qui évite une fermeture abrupte du programme à la réception
+	// du signal
+	signal(SIGPIPE, SIG_IGN);
+	
 	// L'adresse IP du serveur récupéré à partir des arguments du programme.
 	const std::string server_ip = argv[1];
 	
@@ -21,7 +35,10 @@ int main(int argc, char *argv[])
 	// Configuration adresse du serveur
 	struct sockaddr_in serv_addr;
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(8080);
+	serv_addr.sin_port = htons(PORT);
+	
+	// Conversion de string vers IPv4 ou IPv6 en binaire
+	inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr);
 	
 	// Connexion socket client au serveur
 	checked(connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)));
@@ -63,18 +80,13 @@ int main(int argc, char *argv[])
 		 }
 		 
 	// Fermeture du socket client
-  close(sock);
-  return 0;
+	closeclient(sock);
+	
+	return 0;
   }
      
      	
-	// Pour chaque requête valide entrée, on demande à l'utilisateur de spécifier ce qu'il veut
-	
-	
-	// SELECT
-	// INSERT
-	// UPDATE
-	// DELETE
+
 
 
 
